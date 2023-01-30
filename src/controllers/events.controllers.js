@@ -1,8 +1,9 @@
-import {conexion} from './database/conexion.js';
+// import {conexion} from '../../../database/conexion.js';
+import {pool} from 'mysql2';
 
-const newEvent = async(req, res) =>{
+export const newEvent = async(req, res) =>{
     try {
-        const{tema, titulo, fecha} = req.body
+        const{tema, titulo, fecha_inic, fecha_fin, descripcion} = req.body
         const [rows] = await pool.query('INSERT INTO eventos (tema, titulo, descripcion, fecha_inic, fecha_fin) VALUES (?,?,?,?,?)', [tema, titulo, descripcion, fecha_inic, fecha_fin])
         console.log(req.body)
         res.send({
@@ -14,8 +15,10 @@ const newEvent = async(req, res) =>{
             fecha_fin,
         })        
     } catch (error) {
+        console.log(error)
         return res.status(500).json({
-            message: 'error bb'
+            message: 'error bb',
+            error: error,
         })
     }
 }
