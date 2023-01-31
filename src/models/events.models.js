@@ -22,6 +22,11 @@ class EventoModelo{
         return rows;    
 
     }
+
+    filterByEvento = async(id) => {
+        const [rows] = await pool.query('SELECT e.nombres, e.apellidos FROM participante e INNER JOIN participante_evento ep ON e.participante_id = ep.participante_id WHERE ep.evento_id = ? ;', [id])
+        return rows;    
+    }
 }
 
 export default EventoModelo;

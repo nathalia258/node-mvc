@@ -29,10 +29,9 @@ class ParticipanteController{
     }
     create = async(Request, Response) => {
         try{  
-            const response = await participanteModelo.create(Request.body);
-            Response.status(201).json({
-                msg: response,
-            })
+            const {nombres, apellidos, correo} =  Request.body
+            const response = await participanteModelo.create(nombres, apellidos, correo);
+            Response.send(response)          
         }catch (error) {
             return Response.status(500).json({
                 message: error
@@ -40,5 +39,17 @@ class ParticipanteController{
         } 
     }
 
+    filterByParticipante = async(Request, Response) => {
+        try{  
+            const id = Request.params.id
+            console.log (id);
+            const response = await participanteModelo.filterByParticipante(id);
+            Response.send(response)          
+        }catch (error) {
+            return Response.status(500).json({
+                message: error
+            })
+        } 
+    }
 } 
 export default ParticipanteController;

@@ -60,5 +60,16 @@ class EventoController{
         } 
     }
 
+    filterByEvento = async(Request, Response) => {
+        try{  
+            const id = Request.params.id
+            const response = await eventoModelo.filterByEvento(id);
+            Response.send(response)          
+        }catch (error) {
+            return Response.status(500).json({
+                message: error
+            })
+        } 
+    }
 } 
 export default EventoController;
