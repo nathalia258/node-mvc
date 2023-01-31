@@ -1,59 +1,64 @@
-// import {conexion} from '../../../database/conexion.js';
-import {pool} from 'mysql2';
+// import {pool} from '../../database/conexion.js';
+import EventoModelo from '../models/events.models.js';
+import  Request  from 'express';
+import  Response  from 'express';
 
-export const newEvent = async(req, res) =>{
-    try {
-        const{tema, titulo, fecha_inic, fecha_fin, descripcion} = req.body
-        const [rows] = await pool.query('INSERT INTO eventos (tema, titulo, descripcion, fecha_inic, fecha_fin) VALUES (?,?,?,?,?)', [tema, titulo, descripcion, fecha_inic, fecha_fin])
-        console.log(req.body)
-        res.send({
-            id : rows.insertId,
-            tema,
-            titulo, 
-            descripcion,
-            fecha_inic,
-            fecha_fin,
-        })        
-    } catch (error) {
-        console.log(error)
-        return res.status(500).json({
-            message: 'error bb',
-            error: error,
-        })
-    }
-}
+const eventoModelo = new EventoModelo
 
-const allEvent = async(req, res) =>{
-    try {
-        const rows = await pool.query('SELECT * FROM eventos')
-        res.json(rows)      
-    } catch (error) {
-        return res.status(500).json({
-            message: 'error bb'
-        })
-    }
-}
 
-const deleteEvent = async(req, res) =>{
-    try {
-        const [result] = await pool.query('DELETE FROM eventos WHERE id = ?', [req.params.id])
-        res.json(
-            "borrados bb" 
-        )      
-    } catch (error) {
-        return res.status(500).json({
-            message: 'error bb'
-        })
+class EventoController{
+    index = async(Request, Response) =>{
+        try{
+            const response = await eventoModelo.getAll();
+            Response.send (response)
+        }catch (error) {
+            return Response.status(500).json({
+                message: error
+            })
+        } 
     }
-}
+    show = async(Request, Response) => {
+        try{  
+            const response = await eventoModelo.getOne(Request.params.id);
+            Response.send (response)
+        }catch (error) {
+            return Response.status(500).json({
+                message: error
+            })
+        } 
+    }
+    create = async(Request, Response) => {
+        try{  
+            const response = await eventoModelo.create(Request.body);
+            Response.status(201).json({
+                msg: response,
+            })
+        }catch (error) {
+            return Response.status(500).json({
+                message: error
+            })
+        } 
+    }
 
-const dateEvent = async(req, res) =>{
-    try {
-        const rows = await pool.query('SELECT * FROM eventos WHERE fecha = ?' , [req.params.date])
-        res.json(rows)      
-    } catch (error) {
-        return res.status(500).json({
-            message: 'error bb'
-        })
+    filterDate = async(Request, Response) => {
+        try{  
+            const {fecha_inicio , fecha_fin} = Request.body
+            if (fecha_inicio > fecha_fin){
+                return Response.status(400).json({
+                    Error: "La fecha de inicio no puede ser despues de la fecha de fin, pido seriedad mi pana"
+                })
+
+            }
+            const response = await eventoModelo.getByDate(fecha_inicio, fecha_fin);
+            Response.status(201).json({
+                msg: response[0],
+            })
+        }catch (error) {
+            return Response.status(500).json({
+                message: error
+            })
+        } 
     }
-}
+
+} 
+export default EventoController;

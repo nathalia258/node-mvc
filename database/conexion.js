@@ -1,6 +1,6 @@
-var mysql = require('mysql2');
+import {createPool} from 'mysql2/promise'
 
-var conexion = mysql.createConnection(
+export const pool = createPool(
     {
         host: 'localhost',
         user: 'root',
@@ -8,13 +8,11 @@ var conexion = mysql.createConnection(
         database : 'calendario'
 });
 
-conexion.connect(function (error) {
-    if (error) {
-        throw error;
+// pool.connect(function (error) {
+//     if (error) {
+//         throw error;
 
-    } else {
-        console.log("Conexion exitosa");
-    }
-})
-
-conexion.end()
+//     } else {
+//         console.log("Conexion exitosa");
+//     }
+// })

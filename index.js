@@ -1,17 +1,16 @@
 import express from 'express'
-import { newEvent } from './src/controllers/events.controllers.js';
 import eventsRoutes from './src/routes/events.routes.js';
+import participantsRoutes from './src/routes/participants.routes.js';
 
 const app = express()
 const PORT = 3000;
 
 app.use(express.json())
 
-app.use(newEvent)
 app.use(eventsRoutes)
-
+app.use(participantsRoutes)
 app.listen(3000)
-console.log(`corriendo bb en el puerto:${PORT}`)
+console.log(`corriendo en el puerto:${PORT}`)
 
 // const http = require('http');
 
